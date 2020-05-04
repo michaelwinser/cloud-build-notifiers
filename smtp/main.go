@@ -46,7 +46,7 @@ type smtpNotifier struct {
 }
 
 type mailConfig struct {
-	server, port, sender, password string
+	server, port, username, sender, password string
 	recipients                     []string
 }
 
