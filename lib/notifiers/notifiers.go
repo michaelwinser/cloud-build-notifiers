@@ -131,6 +131,7 @@ type CELPredicate struct {
 // Apply returns true iff the underlying CEL program returns true for the given Build.
 func (c *CELPredicate) Apply(_ context.Context, build *cbpb.Build) bool {
 	if *nofilterFlag {
+		log.Infof("nofilter flag is on, filter is always true\n");
 		return true;
 	}
 
