@@ -127,6 +127,7 @@ func getMailConfig(ctx context.Context, sg notifiers.SecretGetter, spec *notifie
 }
 
 func (s *smtpNotifier) SendNotification(ctx context.Context, build *cbpb.Build) error {
+	log.Infof("SendNotification %v\n", build);
 	if s.filter.Apply(ctx, build) {
 		log.Infof("sending mail for event:\n%s", proto.MarshalTextString(build))
 		return s.sendSMTPNotification(build)
