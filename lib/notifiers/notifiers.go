@@ -210,12 +210,12 @@ func Main(notifier Notifier) error {
 	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		log.V(2).Infof("Sending test notification\n")
 		build := new(cbpb.Build)
-		fmt.Fprintf(w, "Testing notifier\n");
+		fmt.Fprintf(w, "Testing notifier %T\n", notifier);
 		if err := notifier.SendNotification(r.Context(), build); err != nil {
 			log.Errorf("failed to run SendNotification: %v", err)
 			http.Error(w, "failed to send notification", http.StatusInternalServerError)
-			return
 		}
+		fmt.Fprintf(w, "Testing notifier complete\n");
 	})
 
 
