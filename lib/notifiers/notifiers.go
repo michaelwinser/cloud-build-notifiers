@@ -162,7 +162,7 @@ func Main(notifier Notifier) error {
 		log.V(0).Infof("notifier smoketest: %T", notifier)
 		return nil
 	}
-	j
+
 	if *nofilterFlag {
 		log.V(0).Infof("notifier nofilter: %T", notifier)
 	}
