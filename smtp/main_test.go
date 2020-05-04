@@ -51,6 +51,7 @@ func TestGetMailConfig(t *testing.T) {
 					Delivery: map[string]interface{}{
 						"server":     "smtp.example.com",
 						"port":       "4040",
+						"username":   "username@example.com",
 						"password":   map[interface{}]interface{}{"secretRef": "my-smtp-password"},
 						"sender":     "me@example.com",
 						"recipients": []interface{}{"my-cto@example.com", "my-friend@example.com"},
@@ -61,6 +62,7 @@ func TestGetMailConfig(t *testing.T) {
 			wantConfig: mailConfig{
 				server:     "smtp.example.com",
 				port:       "4040",
+				username:   "username@example.com",
 				password:   password,
 				sender:     "me@example.com",
 				recipients: []string{"my-cto@example.com", "my-friend@example.com"},
