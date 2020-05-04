@@ -111,6 +111,7 @@ spec:
     delivery:
       server: smtp.example.com
       port: '587'
+      username: username@example.com
       sender: my-notifier@example.com
       password:
         secretRef: smtp-password
@@ -125,6 +126,7 @@ spec:
 	wantMailConfig := mailConfig{
 		server:     "smtp.example.com",
 		port:       "587",
+		username:   "username@example.com",
 		password:   password,
 		sender:     "my-notifier@example.com",
 		recipients: []string{"some-eng@example.com", "me@example.com"},
