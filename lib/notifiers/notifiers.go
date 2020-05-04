@@ -201,7 +201,6 @@ func Main(notifier Notifier) error {
 			notifier, startTime.Format(time.RFC1123), time.Now().Format(time.RFC1123))
 	})
 
-
 	var port string
 	if p, ok := GetEnv("PORT"); ok {
 		port = p
