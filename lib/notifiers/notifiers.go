@@ -55,7 +55,6 @@ var (
 // Flags.
 var (
 	smoketestFlag = flag.Bool("smoketest", false, "If true, Main will simply log the notifier type and exit.")
-	nofilterFlag = flag.Bool("nofilter", false, "If true, filters be ignored")
 )
 
 // Config is the common type for (YAML-based) configuration files for notifications.
@@ -130,13 +129,6 @@ type CELPredicate struct {
 
 // Apply returns true iff the underlying CEL program returns true for the given Build.
 func (c *CELPredicate) Apply(_ context.Context, build *cbpb.Build) bool {
-	log.Infof("Applying filter, checking nofilterFlag %v\n", *nofilterFlag);
-	return true;
-	if *nofilterFlag {
-		log.Infof("nofilter flag is on, filter is always true\n");
-		return true;
-	}
-
 	out, _, err := c.prg.Eval(map[string]interface{}{"build": build})
 	if err != nil {
 		log.Errorf("failed to evaluate the CEL filter: %v", err)
@@ -161,10 +153,6 @@ func Main(notifier Notifier) error {
 	if *smoketestFlag {
 		log.V(0).Infof("notifier smoketest: %T", notifier)
 		return nil
-	}
-
-	if *nofilterFlag {
-		log.V(0).Infof("notifier nofilter: %T", notifier)
 	}
 
 	ctx := context.Background()
@@ -211,17 +199,6 @@ func Main(notifier Notifier) error {
 	http.HandleFunc("/helloz", func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprintf(w, "Greetings from a Google Cloud Build notifier: %T!\nStart Time: %s\nCurrent Time: %s\n",
 			notifier, startTime.Format(time.RFC1123), time.Now().Format(time.RFC1123))
-	})
-
-	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		log.V(2).Infof("Sending test notification\n")
-		build := new(cbpb.Build)
-		fmt.Fprintf(w, "Testing notifier %T\n", notifier);
-		if err := notifier.SendNotification(r.Context(), build); err != nil {
-			log.Errorf("failed to run SendNotification: %v", err)
-			http.Error(w, "failed to send notification", http.StatusInternalServerError)
-		}
-		fmt.Fprintf(w, "Testing notifier complete\n");
 	})
 
 
