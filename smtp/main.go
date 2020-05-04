@@ -83,6 +83,10 @@ func getMailConfig(ctx context.Context, sg notifiers.SecretGetter, spec *notifie
 	if !ok {
 		return mailConfig{}, fmt.Errorf("expected delivery config %v to have string field `port`", delivery)
 	}
+	username, ok := delivery["username"].(string)
+	if !ok {
+		return mailConfig{}, fmt.Errorf("expected delivery config %v to have string field `username`", delivery)
+	}
 	sender, ok := delivery["sender"].(string)
 	if !ok {
 		return mailConfig{}, fmt.Errorf("expected delivery config %v to have string field `sender`", delivery)
@@ -120,6 +124,7 @@ func getMailConfig(ctx context.Context, sg notifiers.SecretGetter, spec *notifie
 	return mailConfig{
 		server:     server,
 		port:       port,
+		username:   username,
 		sender:     sender,
 		password:   password,
 		recipients: recipients,
@@ -143,7 +148,7 @@ func (s *smtpNotifier) sendSMTPNotification(build *cbpb.Build) error {
 	}
 
 	addr := fmt.Sprintf("%s:%s", s.mcfg.server, s.mcfg.port)
-	auth := smtp.PlainAuth("", s.mcfg.sender, s.mcfg.password, s.mcfg.server)
+	auth := smtp.PlainAuth("", s.mcfg.username, s.mcfg.password, s.mcfg.server)
 
 	if err = smtp.SendMail(addr, auth, s.mcfg.sender, s.mcfg.recipients, []byte(email)); err != nil {
 		return fmt.Errorf("failed to send email: %v", err)
