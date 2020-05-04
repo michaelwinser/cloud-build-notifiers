@@ -201,6 +201,17 @@ func Main(notifier Notifier) error {
 			notifier, startTime.Format(time.RFC1123), time.Now().Format(time.RFC1123))
 	})
 
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		log.V(2).Infof("Sending test notification\n")
+		build := new(cbpb.Build)
+		if err := notifier.SendNotification(r.Context(), build); err != nil {
+			log.Errorf("failed to run SendNotification: %v", err)
+			http.Error(w, "failed to send notification", http.StatusInternalServerError)
+			return
+		}
+	})
+
+
 	var port string
 	if p, ok := GetEnv("PORT"); ok {
 		port = p
