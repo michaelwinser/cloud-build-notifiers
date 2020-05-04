@@ -55,6 +55,7 @@ var (
 // Flags.
 var (
 	smoketestFlag = flag.Bool("smoketest", false, "If true, Main will simply log the notifier type and exit.")
+	nofilterFlag = flag.Bool("nofilter", false, "If true, filters be ignored")
 )
 
 // Config is the common type for (YAML-based) configuration files for notifications.
@@ -129,6 +130,10 @@ type CELPredicate struct {
 
 // Apply returns true iff the underlying CEL program returns true for the given Build.
 func (c *CELPredicate) Apply(_ context.Context, build *cbpb.Build) bool {
+	if *nofilterFlag {
+		return true;
+	}
+
 	out, _, err := c.prg.Eval(map[string]interface{}{"build": build})
 	if err != nil {
 		log.Errorf("failed to evaluate the CEL filter: %v", err)
